@@ -30,12 +30,6 @@ func NewHandler(repo repository.Repository) *Handler {
 
 	templates := template.Must(template.New("").Funcs(funcMap).ParseGlob("templates/*.html"))
 
-	// Debug: Print all loaded templates
-	log.Println("Loaded templates:")
-	for _, t := range templates.Templates() {
-		log.Printf("  - %s", t.Name())
-	}
-
 	return &Handler{
 		repo:      repo,
 		templates: templates,
@@ -66,13 +60,14 @@ func (h *Handler) HomeHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	data := map[string]interface{}{
+		"Page":   "index",
 		"Title":  "Dashboard",
 		"Items":  items,
 		"Config": config,
 	}
 
-	if err := h.templates.ExecuteTemplate(w, "index.html", data); err != nil {
-		log.Printf("Error rendering index.html: %v", err)
+	if err := h.templates.ExecuteTemplate(w, "layout.html", data); err != nil {
+		log.Printf("Error rendering index: %v", err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 }
@@ -188,12 +183,13 @@ func (h *Handler) StatsHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	data := map[string]interface{}{
+		"Page":  "stats",
 		"Title": "Statistics",
 		"Stats": stats,
 	}
 
-	if err := h.templates.ExecuteTemplate(w, "stats.html", data); err != nil {
-		log.Printf("Error rendering stats.html: %v", err)
+	if err := h.templates.ExecuteTemplate(w, "layout.html", data); err != nil {
+		log.Printf("Error rendering stats: %v", err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 }
@@ -202,11 +198,12 @@ func (h *Handler) ConfigHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "GET" {
 		config, _ := h.repo.GetConfig()
 		data := map[string]interface{}{
+			"Page":   "config",
 			"Title":  "Settings",
 			"Config": config,
 		}
-		if err := h.templates.ExecuteTemplate(w, "config.html", data); err != nil {
-			log.Printf("Error rendering config.html: %v", err)
+		if err := h.templates.ExecuteTemplate(w, "layout.html", data); err != nil {
+			log.Printf("Error rendering config: %v", err)
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
 		return
