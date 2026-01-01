@@ -1,0 +1,51 @@
+{{define "content"}}
+<div class="row mb-4">
+    <div class="col">
+        <h2>My Items</h2>
+    </div>
+</div>
+
+<div id="items-container" class="row g-4">
+    {{template "items_list.html" .}}
+</div>
+
+<!-- Quick Add Button -->
+<button class="btn btn-primary quick-add-btn" 
+        data-bs-toggle="modal" 
+        data-bs-target="#addModal"
+        title="Add new item">
+    <i class="bi bi-plus-lg"></i>
+</button>
+{{end}}
+
+{{define "modals"}}
+<!-- Add Item Modal -->
+<div class="modal fade" id="addModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add New Item</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form hx-post="/add" 
+                      hx-target="#items-container" 
+                      hx-swap="innerHTML"
+                      hx-on::after-request="if(event.detail.successful) bootstrap.Modal.getInstance(document.getElementById('addModal')).hide(); document.getElementById('addForm').reset();">
+                    
+                    <div id="addForm">
+                        {{template "add_form.html"}}
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Save</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{{end}}
+
+{{template "layout" .}}

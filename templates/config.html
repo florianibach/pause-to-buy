@@ -1,0 +1,82 @@
+{{define "content"}}
+<div class="row mb-4">
+    <div class="col">
+        <h2><i class="bi bi-gear"></i> Settings</h2>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-body">
+                <form hx-post="/config" hx-swap="none">
+                    <div class="mb-4">
+                        <label for="hourly_wage" class="form-label">
+                            <i class="bi bi-cash"></i> Hourly Wage (€)
+                        </label>
+                        <input type="number" class="form-control" 
+                               id="hourly_wage" name="hourly_wage" 
+                               step="0.50" min="0" 
+                               value="{{.Config.HourlyWage}}" required>
+                        <div class="form-text">
+                            Used to calculate how many work hours a purchase costs.
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="ntfy_topic" class="form-label">
+                            <i class="bi bi-bell"></i> Ntfy Topic (optional)
+                        </label>
+                        <input type="text" class="form-control" 
+                               id="ntfy_topic" name="ntfy_topic" 
+                               value="{{.Config.NtfyTopic}}"
+                               placeholder="my-pausetobuye-topic">
+                        <div class="form-text">
+                            Receive push notifications via <a href="https://ntfy.sh" target="_blank">ntfy.sh</a> 
+                            when an item's wait time is over.
+                            <br><strong>Important:</strong> Choose a unique topic, e.g. "pausetobuye-john-12345"
+                        </div>
+                    </div>
+
+                    <div class="alert alert-info">
+                        <h6 class="alert-heading">
+                            <i class="bi bi-info-circle"></i> Setting up Ntfy
+                        </h6>
+                        <ol class="mb-0 ps-3">
+                            <li>Download the <a href="https://ntfy.sh" target="_blank">ntfy app</a></li>
+                            <li>Create a unique topic (e.g. "pausetobuye-john-12345")</li>
+                            <li>Enter the topic here</li>
+                            <li>Subscribe to the topic in the ntfy app</li>
+                        </ol>
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-check-lg"></i> Save
+                        </button>
+                        <a href="/" class="btn btn-secondary">
+                            <i class="bi bi-arrow-left"></i> Back
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="card mt-4">
+            <div class="card-body">
+                <h5 class="card-title">
+                    <i class="bi bi-question-circle"></i> About This App
+                </h5>
+                <p class="mb-2">
+                    <strong>PauseToBuye</strong> helps you make more conscious purchasing decisions.
+                </p>
+                <p class="mb-0 text-muted small">
+                    Built with Go, HTMX and Bootstrap
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{{end}}
+
+{{template "layout" .}}

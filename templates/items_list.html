@@ -1,0 +1,87 @@
+{{if .Items}}
+    {{range .Items}}
+    <div class="col-md-6 col-lg-4">
+        <div class="card item-card card-{{.Status}} h-100">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <h5 class="card-title mb-0">{{.Title}}</h5>
+                    <span class="badge status-badge-{{.Status}}">
+                        {{if eq .Status "waiting"}}⏳ Waiting
+                        {{else if eq .Status "available"}}✅ Ready
+                        {{else if eq .Status "bought"}}🛒 Bought
+                        {{else if eq .Status "skipped"}}❌ Skipped
+                        {{end}}
+                    </span>
+                </div>
+
+                <h3 class="text-primary mb-3">{{formatPrice .Price}}</h3>
+
+                {{if .Category}}
+                <p class="mb-2">
+                    <span class="badge bg-secondary">{{.Category}}</span>
+                </p>
+                {{end}}
+
+                {{if .Notes}}
+                <p class="text-muted small mb-3">{{.Notes}}</p>
+                {{end}}
+
+                <div class="mb-3">
+                    <small class="text-muted">
+                        <i class="bi bi-clock"></i> 
+                        {{if eq .Status "waiting"}}
+                            {{.DaysRemaining}} day(s) left
+                        {{else if eq .Status "available"}}
+                            Wait time over!
+                        {{else}}
+                            {{formatDate .CreatedAt}}
+                        {{end}}
+                    </small>
+                </div>
+
+                <div class="alert alert-info py-2 mb-3">
+                    <small>
+                        <i class="bi bi-briefcase"></i> 
+                        <strong>{{printf "%.1f" .HoursToWork}} hours</strong> of work
+                    </small>
+                </div>
+
+                {{if .Link}}
+                <div class="mb-3">
+                    <a href="{{.Link}}" target="_blank" class="btn btn-sm btn-outline-secondary">
+                        <i class="bi bi-link-45deg"></i> Open link
+                    </a>
+                </div>
+                {{end}}
+
+                {{if eq .Status "available"}}
+                <div class="d-grid gap-2">
+                    <button class="btn btn-success btn-sm" 
+                            hx-post="/update-status/{{.ID}}" 
+                            hx-vals='{"status": "bought"}'
+                            hx-target="#items-container"
+                            hx-swap="innerHTML">
+                        <i class="bi bi-bag-check"></i> Bought
+                    </button>
+                    <button class="btn btn-secondary btn-sm" 
+                            hx-post="/update-status/{{.ID}}" 
+                            hx-vals='{"status": "skipped"}'
+                            hx-target="#items-container"
+                            hx-swap="innerHTML">
+                        <i class="bi bi-x-circle"></i> Skip
+                    </button>
+                </div>
+                {{end}}
+            </div>
+        </div>
+    </div>
+    {{end}}
+{{else}}
+    <div class="col-12">
+        <div class="alert alert-info text-center">
+            <i class="bi bi-inbox" style="font-size: 3rem;"></i>
+            <h4 class="mt-3">No items yet</h4>
+            <p>Add your first item to start tracking!</p>
+        </div>
+    </div>
+{{end}}
